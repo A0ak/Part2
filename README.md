@@ -1,1 +1,1 @@
-I created all components in App.jsx under src.
+I created all the components in App.jsx under src.
