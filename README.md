@@ -1,2 +1,1 @@
-To show the total of the exercises, I added a total calculation operation to the Content component.
-I used the reduce function. This function performs an operation on an array and returns a single result. In this case, the reduce function sums the number of exercises in each section.
+I already did this task in Exercise 2.2. I shared the same code.
