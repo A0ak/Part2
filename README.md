@@ -1,1 +1,1 @@
-Exercise 2.6: The Phonebook Step1
+Exercise 2.7: The Phonebook Step2
