@@ -1,93 +1,68 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-const Filter = ({ value, onChange }) => (
-  <div>
-    filter shown with <input value={value} onChange={onChange} />
-  </div>
-)
-
-const PersonForm = ({ onSubmit, name, onNameChange, number, onNumberChange }) => (
-  <form onSubmit={onSubmit}>
-    <div>
-      name: <input value={name} onChange={onNameChange} />
-    </div>
-    <div>
-      number: <input value={number} onChange={onNumberChange} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-)
-
-const Persons = ({ persons }) => (
-  <div>
-    {persons.map((person, index) => <p key={index}>{person.name} {person.number}</p>)}
-  </div>
-)
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [searchName, setSearchName] = useState('')
+
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/persons').then(response => {
+      setPersons(response.data)
+    })
+  }, [])
+
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
+
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
 
-  const handleSearchChange = (event) => {
-    setSearchName(event.target.value)
-  }
 
   const addName = (event) => {
     event.preventDefault()
     const nameObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: persons.length + 1,
     }
-
-    const nameExists = persons.some(person => person.name === newName)
-
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNumber('')
-    }
+  
+    axios.post('http://localhost:3001/persons', nameObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
-  const personsToShow = searchName
-    ? persons.filter(person => person.name.toLowerCase().includes(searchName.toLowerCase()))
-    : persons
 
   return (
     <div>
       <h2>Phonebook</h2>
-
-      <Filter value={searchName} onChange={handleSearchChange} />
-
-      <h3>Add a new</h3>
-
-      <PersonForm 
-        onSubmit={addName}
-        name={newName}
-        onNameChange={handleNameChange}
-        number={newNumber}
-        onNumberChange={handleNumberChange}
-      />
-
-      <h3>Numbers</h3>
-
-      <Persons persons={personsToShow} />
+      <form onSubmit={addName}>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      <div>
+        {persons.map((person) => <p key={person.id}>{person.name} {person.number}</p>)}
+      </div>
     </div>
   )
 }
 
-export default App
 
+export default App
