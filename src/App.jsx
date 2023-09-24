@@ -27,13 +27,22 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
     }
-
+  
     personService.create(nameObject)
       .then(response => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
       })
+  }
+
+  const deleteName = (id) => {
+    if (window.confirm("Do you really want to delete this person?")) {
+      personService.deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
   }
 
   return (
@@ -52,7 +61,12 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map((person) => <p key={person.id}>{person.name} {person.number}</p>)}
+        {persons.map((person) => 
+          <p key={person.id}>
+            {person.name} {person.number} 
+            <button onClick={() => deleteName(person.id)}>delete</button>
+          </p>
+        )}
       </div>
     </div>
   )

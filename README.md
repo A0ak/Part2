@@ -1,17 +1,4 @@
-# Exercises 2.13 : The Phonebook step 8
+## 2.14: The Phonebook step 9
 
-I wrote the necessary code and functions to make HTTP requests and perform backend communication in the `api.js` file under the `src` folder.
-
-Commands to start json-server:
-
-1. Temporarily removes the block imposed by PowerShell's security policy:
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-
-2. Starts json-server:
-json-server --watch db.json --port 3001
-
-3. Opens the URL http://localhost:3001/persons:
-
-Start http://localhost:3001/persons
-
+- Added a delete function in the `api.js` file to allow users to delete entries.
+- In the `App.jsx` file, added a delete button for each person and created a handler function that calls the delete function when the button is clicked.
