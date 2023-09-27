@@ -30,10 +30,26 @@ const App = () => {
         Search: <input value={search} onChange={handleSearchChange} />
       </div>
       <div>
-        {filteredCountries.map((country) =>
-          <p key={country.name.common}>
-            {country.name.common}
-          </p>
+        {filteredCountries.length > 1 ? (
+          filteredCountries.map((country) =>
+            <p key={country.name.common}>
+              {country.name.common}
+            </p>
+          )
+        ) : (
+          filteredCountries.length === 1 && (
+            <div>
+              <h2>{filteredCountries[0].name.common}</h2>
+              <p>Capital: {filteredCountries[0].capital[0]}</p>
+              <p>Population: {filteredCountries[0].population}</p>
+              <h3>Languages</h3>
+              <ul>
+                {Object.values(filteredCountries[0].languages).map((language, i) =>
+                  <li key={i}>{Object.values(language)[0]}</li>
+                )}
+              </ul>
+            </div>
+          )
         )}
       </div>
     </div>
