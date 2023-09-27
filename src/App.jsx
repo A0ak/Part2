@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import personService from './api'
 import './index.css';
 
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [notification, setNotification] = useState(null);
-  const [search, setSearch] = useState(''); 
+  const [search, setSearch] = useState('');
+
 
   useEffect(() => {
     personService.getAll().then(response => {
@@ -15,17 +17,21 @@ const App = () => {
     })
   }, [])
 
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
+
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
 
+
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   }
+
 
   const addName = (event) => {
     event.preventDefault()
@@ -44,7 +50,13 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingPerson.id ? person : response.data))
             setNewName('')
             setNewNumber('')
-            setNotification(`Updated ${newName}`);
+            setNotification({ message: `Updated ${newName}`, type: 'success' });
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
+          })
+          .catch(error => {
+            setNotification({ message: `The information of ${newName} has already been removed from server`, type: 'error' });
             setTimeout(() => {
               setNotification(null);
             }, 5000);
@@ -56,7 +68,13 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('')
           setNewNumber('')
-          setNotification(`Added ${newName}`);
+          setNotification({ message: `Added ${newName}`, type: 'success' });
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
+        })
+        .catch(error => {
+          setNotification({ message: `Failed to add ${newName}`, type: 'error' });
           setTimeout(() => {
             setNotification(null);
           }, 5000);
@@ -64,13 +82,14 @@ const App = () => {
     }
   }
 
+
   const deleteName = (id) => {
     const personToDelete = persons.find(person => person.id === id);
     if (window.confirm("Do you really want to delete this person?")) {
       personService.deletePerson(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
-          setNotification(`Deleted ${personToDelete.name}`);
+          setNotification({ message: `Deleted ${personToDelete.name}`, type: 'success' });
           setTimeout(() => {
             setNotification(null);
           }, 5000);
@@ -78,14 +97,16 @@ const App = () => {
     }
   };
 
-  const filteredPersons = persons.filter(person => 
-    person.name.toLowerCase().includes(search.toLowerCase()) 
+
+  const filteredPersons = persons.filter(person =>
+    person.name.toLowerCase().includes(search.toLowerCase())
   );
+
 
   return (
     <div>
       <h2>Phonebook</h2>
-      {notification && <div className="notification">{notification}</div>}
+      {notification && <div className={`notification ${notification.type}`}>{notification.message}</div>}
       <div>
         Search: <input value={search} onChange={handleSearchChange} /> {/* arama alanını ekle */}
       </div>
@@ -114,4 +135,7 @@ const App = () => {
   )
 }
 
+
 export default App
+
+
