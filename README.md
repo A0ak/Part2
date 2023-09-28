@@ -1,29 +1,12 @@
-# 2.18: Data for countries step1
+# 2.19: Data for countries step2
 
-Methods and functions used:
+Added handleShowClick function in addition to country data step1.
 
 ## App.jsx
 
-- `useState` and `useEffect`: React hooks. useState is used to manage the state of the application, and useEffect is used to manage side effects (such as retrieving data from the API).
 
-- `countries` and `setCountries`:It is the state variable created with the useState hook and the function used to update it. countries is an array containing information about countries retrieved from the API.
-- `search` and `setSearch`:  It is the state variable created with the useState hook and the function used to update it. search is a string and contains the text the user entered in the search box.
-- `useEffect` : The component receives data from the API when it is first rendered.
-- `handleSearchChange` : This function saves the text entered by the user in the search box into the search status variable.
-- `filteredCountries` : search Filters countries that contain the text in the status variable.
+- `handleShowClick` : The handleShowClick function is triggered when a user clicks on a country name. This function has two main tasks:
 
-## api.js
+1. setSelectedCountry(country): This sets the clicked country's information to the selectedCountry state variable. This allows the details of the selected country to be displayed later.
 
-- `axios` : This library is used to perform HTTP requests.
-- `baseUrl` : This variable contains the URL of the API.
-- `getAll` : This function retrieves all countries' information from the API. Sends a GET request to the API using the `axios.get` method and returns a Promise.
-
-## Operating
-
-Command to run the project:
-
-- `npm run dev`: This command starts the user side of your application.
-
-## Note
-
-"It seems that 'https://studies.cs.helsinki.fi/restcountries/' is not the correct endpoint for the API. I was unable to fetch data from it. Instead, I utilized the API available at 'https://restcountries.com/v3.1/all'." 
+2. detailsRef.current.scrollIntoView({ behavior: 'smooth' }): This statement scrolls to a specific location on the page (where the details are displayed) when a country is selected. This allows the page to automatically scroll so the user can see the details of the country they selected.

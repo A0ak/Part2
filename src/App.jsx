@@ -1,9 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import countryService from './api'
+
 
 const App = () => {
   const [countries, setCountries] = useState([])
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
+
+
+  const detailsRef = useRef(null)
+
 
   useEffect(() => {
     countryService.getAll().then(response => {
@@ -15,13 +21,23 @@ const App = () => {
     })
   }, [])
 
+
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
+    setSelectedCountry(null);
   }
+
+
+  const handleShowClick = (country) => {
+    setSelectedCountry(country);
+    detailsRef.current.scrollIntoView({ behavior: 'smooth' })
+  }
+
 
   const filteredCountries = countries.filter(country =>
     country.name.common.toLowerCase().includes(search.toLowerCase())
   );
+
 
   return (
     <div>
@@ -30,30 +46,34 @@ const App = () => {
         Search: <input value={search} onChange={handleSearchChange} />
       </div>
       <div>
-        {filteredCountries.length > 1 ? (
-          filteredCountries.map((country) =>
-            <p key={country.name.common}>
-              {country.name.common}
-            </p>
-          )
-        ) : (
-          filteredCountries.length === 1 && (
-            <div>
-              <h2>{filteredCountries[0].name.common}</h2>
-              <p>Capital: {filteredCountries[0].capital[0]}</p>
-              <p>Population: {filteredCountries[0].population}</p>
-              <h3>Languages</h3>
-              <ul>
-                {Object.values(filteredCountries[0].languages).map((language, i) =>
-                  <li key={i}>{Object.values(language)[0]}</li>
-                )}
-              </ul>
-            </div>
-          )
+        {filteredCountries.map((country) =>
+          <div key={country.name.common}>
+            {country.name.common}
+            <button onClick={() => handleShowClick(country)}>Show</button>
+          </div>
         )}
+        <div ref={detailsRef}>
+          {selectedCountry && (
+            <div>
+              <h2>{selectedCountry.name.common}</h2>            
+              <p>Capital: {selectedCountry.capital ? selectedCountry.capital[0] : 'N/A'}</p>
+              <p>Population: {selectedCountry.population}</p>
+              <h3>Languages</h3>            
+              <ul>
+                {selectedCountry.languages ? Object.values(selectedCountry.languages).map((language, i) =>
+                  <li key={i}>{language}</li>
+                ) : <li>N/A</li>}
+              </ul>
+              <img src={selectedCountry.flags.png} alt={`Flag of ${selectedCountry.name.common}`} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
+
 export default App
+
+
