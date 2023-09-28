@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import countryService from './api'
+import weatherService from './weatherService' 
 
 
 const App = () => {
   const [countries, setCountries] = useState([])
   const [search, setSearch] = useState('')
   const [selectedCountry, setSelectedCountry] = useState(null)
-
-
+  const [weather, setWeather] = useState(null) 
   const detailsRef = useRef(null)
 
 
@@ -30,6 +30,11 @@ const App = () => {
 
   const handleShowClick = (country) => {
     setSelectedCountry(country);
+    if (country.capital) {
+      weatherService.getWeather(country.capital[0]).then(response => {
+        setWeather(response.data)
+      })
+    }
     detailsRef.current.scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -65,6 +70,13 @@ const App = () => {
                 ) : <li>N/A</li>}
               </ul>
               <img src={selectedCountry.flags.png} alt={`Flag of ${selectedCountry.name.common}`} />
+              {weather && (
+                <div>
+                  <h3>Weather in {selectedCountry.capital ? selectedCountry.capital[0] : 'N/A'}</h3>
+                  <p><strong>temperature:</strong> {weather.main.temp} Celsius</p>
+                  <p><strong>wind:</strong> {weather.wind.speed} m/s</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -75,5 +87,6 @@ const App = () => {
 
 
 export default App
+
 
 
